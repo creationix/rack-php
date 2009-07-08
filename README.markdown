@@ -14,7 +14,7 @@ Also is an adaptor that bridges ruby and php allowing php rack apps to run as a 
 Here is a simple rackup.php file.  This is the php script bootstrapped by the various rack servers.
 
 
-**public/index.php**
+**public/index.php** <http://cloud.github.com/downloads/creationix/rack-php/apache.png>
 
     <?
     require 'autoload.php'; // Set up class auto-loading
@@ -24,7 +24,7 @@ Here is a simple rackup.php file.  This is the php script bootstrapped by the va
 
 This version is meant to be the index.php file used by traditional web hosts (mod_php, mod_fcgid, etc...)
 
-**rackup.php**
+**rackup.php** <http://cloud.github.com/downloads/creationix/rack-php/thin.png>
 
     #!/usr/bin/env php
     <?
