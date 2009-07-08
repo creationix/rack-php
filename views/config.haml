@@ -1,0 +1,10 @@
+- ksort($config);
+%table.config.list
+  %tr
+    %th Name
+    %th Value
+  - foreach ($config as $key=>$value)
+    %tr
+      %td= htmlspecialchars($key)
+      %td= htmlspecialchars($value)
+

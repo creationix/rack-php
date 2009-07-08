@@ -1,0 +1,9 @@
+<?
+namespace core;
+
+class Model
+{
+
+
+}
+

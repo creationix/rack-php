@@ -1,0 +1,8 @@
+<?
+namespace core;
+
+class ResourceManager
+{
+
+
+}
