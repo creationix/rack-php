@@ -512,10 +512,10 @@ class HamlParser
 				if (preg_match('/^'.self::TOKEN_TAG.'([a-zA-Z0-9]*)/', $sToParse, $aMatches))
 					$sTag = $aMatches[1];
 				// Match ID
-				if (preg_match('/'.self::TOKEN_ID.'([a-zA-Z0-9_]*)/', $sToParse, $aMatches))
+				if (preg_match('/'.self::TOKEN_ID.'([a-zA-Z0-9_-]*)/', $sToParse, $aMatches))
 					$aAttributes['id'] = "'{$aMatches[1]}'";
 				// Match classes
-				if (preg_match_all('/\\'.self::TOKEN_CLASS.'([a-zA-Z0-9_]*)/', $sToParse, $aMatches))
+				if (preg_match_all('/\\'.self::TOKEN_CLASS.'([a-zA-Z0-9_-]*)/', $sToParse, $aMatches))
 					$aAttributes['class'] = '\''.implode(' ', $aMatches[1]).'\'';
 				// Check for PHP
 				if (preg_match('/'.self::TOKEN_PARSE_PHP.'/', $sToParse))

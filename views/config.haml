@@ -1,10 +1,101 @@
-- ksort($config);
-%table.config.list
-  %tr
+- ksort($config)
+%table.ui-widget.ui-widget-content
+  %tr.ui-widget-header
     %th Name
     %th Value
   - foreach ($config as $key=>$value)
     %tr
-      %td= htmlspecialchars($key)
+      %td.ui-state-highlight= htmlspecialchars($key)
       %td= htmlspecialchars($value)
+%h2.some_class
+  Basic button from different types of markup
+%a.fg-button.ui-state-default.ui-corner-all{ :href => "#" }
+  Link
+%button.fg-button.ui-state-default.ui-corner-all{ :type => "button" }
+  Button element
+%h2
+  Buttons with priority & disabled
+%button.fg-button.ui-state-default.ui-priority-primary.ui-corner-all
+  Primary
+%button.fg-button.ui-state-default.ui-priority-secondary.ui-corner-all
+  Secondary
+%button.fg-button.ui-state-default.ui-state-disabled.ui-corner-all
+  Disabled
+%h2
+  Toggle buttons
+%button.fg-button.ui-state-default.fg-button-toggleable.ui-corner-all
+  Toggle
+%button.fg-button.ui-state-default.fg-button-toggleable.ui-corner-all
+  Toggle
+%button.fg-button.ui-state-default.fg-button-toggleable.ui-corner-all
+  Toggle
+%h2
+  Icons in buttons
+%a.fg-button.ui-state-default.fg-button-icon-left.ui-corner-all{ :href => "#" }
+  %span.ui-icon.ui-icon-circle-plus
+  Previous
+%a.fg-button.ui-state-default.fg-button-icon-right.ui-corner-all{ :href => "#" }
+  %span.ui-icon.ui-icon-circle-plus
+  Next
+%h2
+  Radio button style toggle buttons set
+.fg-buttonset.fg-buttonset-single
+  %button.fg-button.ui-state-default.ui-priority-primary.ui-corner-left
+    Visual
+  %button.fg-button.ui-state-default.ui-priority-primary
+    Code
+  %button.fg-button.ui-state-default.ui-priority-primary
+    Split
+  %button.fg-button.ui-state-default.ui-priority-primary.ui-corner-right
+    Preview
+%h2
+  Multiple select buttons set
+.fg-buttonset.fg-buttonset-multi
+  %button.fg-button.ui-state-default.ui-corner-left
+    %b
+      B
+  %button.fg-button.ui-state-default
+    %i
+      I
+  %button.fg-button.ui-state-default
+    %u
+      U
+  %button.fg-button.ui-state-default.ui-corner-right
+    %span.strike
+      S
+%h2
+  Buttons in a Toolbar
+.fg-toolbar.ui-widget-header.ui-corner-all.ui-helper-clearfix
+  .fg-buttonset.ui-helper-clearfix
+    %a.fg-button.ui-state-default.fg-button-icon-solo.ui-corner-all{ :href => "#", :title => "Open" }
+      %span.ui-icon.ui-icon-folder-open
+      Open
+    %a.fg-button.ui-state-default.fg-button-icon-solo.ui-corner-all{ :href => "#", :title => "Save" }
+      %span.ui-icon.ui-icon-disk
+      Save
+    %a.fg-button.ui-state-default.fg-button-icon-solo.ui-corner-all{ :href => "#", :title => "Delete" }
+      %span.ui-icon.ui-icon-trash
+      Delete
+  .fg-buttonset.fg-buttonset-multi
+    %button.fg-button.ui-state-default.ui-corner-left
+      %b
+        B
+    %button.fg-button.ui-state-default
+      %i
+        I
+    %button.fg-button.ui-state-default.ui-corner-right
+      %u
+        U
+  .fg-buttonset.ui-helper-clearfix
+    %a.fg-button.ui-state-default.fg-button-icon-solo.ui-corner-all{ :href => "#", :title => "Print" }
+      %span.ui-icon.ui-icon-print
+      Print
+    %a.fg-button.ui-state-default.fg-button-icon-solo.ui-corner-all{ :href => "#", :title => "Email" }
+      %span.ui-icon.ui-icon-mail-closed
+      Email
+  .fg-buttonset.fg-buttonset-single.ui-helper-clearfix
+    %button.fg-button.ui-state-default.ui-state-active.ui-priority-primary.ui-corner-left
+      Edit
+    %button.fg-button.ui-state-default.ui-priority-primary.ui-corner-right
+      View
 
