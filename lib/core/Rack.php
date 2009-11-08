@@ -107,6 +107,11 @@ class Rack
     exit;
   }
   
+  public static function useMiddleware($middleware)
+  {
+    array_push(self::$middleware, $middleware);
+  }
+  
   public static function middleware()
   {
     return self::$middleware;
