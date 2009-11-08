@@ -3,6 +3,8 @@ namespace core;
 
 class Rack
 {
+  private static $middleware = array();
+  
   // This converts the native PHP $_SERVER array into a rack hash and then removes the contents of
   // the $_SERVER variable.  This ensures loose coupling and allows for middleware and mock requests.
   private static function get_env()
@@ -104,5 +106,9 @@ class Rack
     }
     exit;
   }
-
+  
+  public static function middleware()
+  {
+    return self::$middleware;
+  }
 }
