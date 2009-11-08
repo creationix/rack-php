@@ -33,7 +33,7 @@ class App
     if ($haml === null)
     {
       $haml = new HamlParser();
-      $haml->setTmp('/tmp');
+      $haml->setTmp(realpath(dirname(__FILE__) . "/../../tmp/cache"));
     }
     $filename = realpath(dirname(__FILE__)."/../../views/$template.haml");
     $haml->setFile($filename);

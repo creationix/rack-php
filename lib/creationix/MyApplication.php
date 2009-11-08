@@ -9,12 +9,8 @@ class MyApplication extends App
   {
     $this->setup($env);
     
-    $this->write($this->render('config', array('config'=>$env)));
-#    $this->write("Hello World\n");
-#    ksort($env);
-#    $this->write(var_export($env, true));
-#    $this->header("Content-Type", "text/plain");
-    
+    $this->write($this->render('config', array('config' => $env)));
+      
     return $this->finish();
   }
     
