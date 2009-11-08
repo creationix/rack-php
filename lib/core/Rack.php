@@ -76,11 +76,11 @@ class Rack
     return $env;
   }
   
-  public static function run($app)
+  public static function run()
   {
     $env =& static::get_env();
     ob_start();
-    $result = $app->call($env);
+    $result = self::runMiddleware($env);
     $output = ob_get_clean();
     if ($output) 
     {
@@ -107,9 +107,38 @@ class Rack
     exit;
   }
   
+  public static function runMiddleware($env)
+  {
+    $result = null;
+    if (empty(self::$middleware)) {
+      return $result;
+    }
+    
+    $middleware = self::$middleware;
+    $prev_app = array_pop($middleware);
+    $prev_app = new $prev_app;
+    $middleware =& array_reverse($middleware);
+    
+    if (!empty($middleware)) {
+      foreach ($middleware as $app) {
+        $prev_app = new $app($prev_app);
+        $result = $prev_app->call($env);
+      }
+    } else {
+      $result = $prev_app->call($env);
+    }
+
+    return $result;
+  }
+  
   public static function useMiddleware($middleware)
   {
     array_push(self::$middleware, $middleware);
+  }
+  
+  public static function clearMiddleware()
+  {
+    self::$middleware = array();
   }
   
   public static function middleware()

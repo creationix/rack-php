@@ -8,6 +8,7 @@ class App
   protected $headers;
   protected $body;
   protected $env;
+  protected $app = null;
 
   protected function setup($env)
   {
