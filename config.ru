@@ -13,8 +13,8 @@ class RubyBridge
   end
 end
 
-use Reloader
-run Cascade.new([
+use Rack::Reloader
+run Rack::Cascade.new([
   File.new('public'),
   RubyBridge.new
 ])

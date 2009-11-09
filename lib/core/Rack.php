@@ -76,12 +76,15 @@ class Rack
     return $env;
   }
   
-  public static function run()
+  public static function run($app)
   {
+    array_push(self::$middleware, $app);
     $env =& static::get_env();
+    
     ob_start();
     $result = self::runMiddleware($env);
     $output = ob_get_clean();
+    
     if ($output) 
     {
       $result[1]["X-Output"] = json_encode($output);
@@ -109,31 +112,28 @@ class Rack
   
   public static function runMiddleware($env)
   {
-    $result = null;
     if (empty(self::$middleware)) {
-      return $result;
+      return null;
     }
     
     $middleware = self::$middleware;
-    $prev_app = array_pop($middleware);
-    $prev_app = new $prev_app;
+    $inner_app = array_pop($middleware);
     $middleware =& array_reverse($middleware);
     
     if (!empty($middleware)) {
       foreach ($middleware as $app) {
-        $prev_app = new $app($prev_app);
-        $result = $prev_app->call($env);
+        $inner_app = $app($inner_app);
       }
-    } else {
-      $result = $prev_app->call($env);
     }
 
-    return $result;
+    return $inner_app($env);
   }
   
-  public static function useMiddleware($middleware)
+  public static function useMiddleware($middleware, $options = array())
   {
-    array_push(self::$middleware, $middleware);
+    array_push(self::$middleware, function ($app) use ($middleware, $options) {
+      return new $middleware($app, $options);
+    });
   }
   
   public static function clearMiddleware()

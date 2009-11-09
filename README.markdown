@@ -69,17 +69,53 @@ Here we can take advantage of the ruby Rack::File middle-ware to serve static fi
 
 Here is a small sample rack-php app that simply ignores all input and outputs the string "Hello World".
 
-    class SampleApplication
+    class SampleApplication extends App
     {
-      public function call($env)
+      public function __invoke($env)
       {
         return array(200, array("Content-Type"=>"text/plain"), array("Hello World"));
       }
     }
 
-As you can see, this works just like a ruby rack app.  The call function is passed the environment hash, and it must return an array of status, headers, body.
+As you can see, this works just like a ruby rack app.  The __invoke magic function is passed the environment hash, and it must return an array of status, headers, body.
 
 In ruby 1.9 and my php adaptor, the body needs to be iterable, so the body string needs to be wrapped in an array.
+
+Here is an example how to use a Rack PHP App with middleware:
+
+**public/index.php**
+
+    <?php
+    require realpath(dirname(__FILE__).'/../lib/autoload.php');
+    use core\Rack;
+    use core\App;
+
+    class UpcaseMiddleware extends App
+    {
+      protected $app;
+
+      public function __construct($app)
+      {
+        $this->app = $app;
+      }
+
+      public function __invoke($env)
+      {
+        list($status, $headers, $body) = $this->call($this->app, $env);
+
+        $upcase_body = strtoupper($body[0]);
+        return array($status, $headers, array($upcase_body));
+      }
+    }
+
+    Rack::useMiddleware('UpcaseMiddleware');
+
+    // We can also use the lambda function
+    $app = function ($env) {
+      return array(200, array('Content-Type' => 'text/html'), array('Hello World!'));
+    };
+
+    Rack::run($app); // => HELLO WORLD!
 
 ## TODO:
 

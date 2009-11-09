@@ -2,13 +2,32 @@
 namespace core;
 use haml\HamlParser;
 
-class App
+class ApplicationNotCallableException extends \Exception
+{
+  public function __construct()
+  {
+    parent::__construct();
+    $this->message = 'Uncallable application called in ' . $this->getFile();
+  }
+}
+
+class TooDeepApplicationCallException extends \Exception
+{
+  public function __construct()
+  {
+    parent::__construct();
+    $this->message = 'Too many recursive calls in the app' . $this->getFile();
+  }
+}
+
+abstract class App
 {
   protected $status;
   protected $headers;
   protected $body;
   protected $env;
-  protected $app = null;
+  
+  public abstract function __invoke($env);
 
   protected function setup($env)
   {
@@ -63,5 +82,17 @@ class App
     $this->headers['Content-Length'] = (string)strlen($this->body);
     return array($this->status, $this->headers, array($this->body));
   }
-
+  
+  protected function call($app, $env = null)
+  {
+    if ($this === $app) {
+      throw new TooDeepApplicationCallException;
+    }
+    
+    if (!is_callable($app)) {
+      throw new ApplicationNotCallableException;
+    }
+    
+    return $app($env);
+  }
 }
