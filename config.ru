@@ -1,3 +1,4 @@
+require 'rubygems'
 require 'json'
 
 class RubyBridge
@@ -15,7 +16,7 @@ end
 
 use Rack::Reloader
 run Rack::Cascade.new([
-  File.new('public'),
+  Rack::File.new('public'),
   RubyBridge.new
 ])
 

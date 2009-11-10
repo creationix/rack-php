@@ -7,13 +7,13 @@ class RubyBridge extends Rack
   // the $_SERVER variable.  This ensures loose coupling and allows for middleware and mock requests.
   protected static function get_env()
   {
-    return json_decode(file_get_contents("php://stdin"), true);
+    return json_decode(file_get_contents('php://stdin'), true);
   }
   
   protected static function execute($result, $env)
   {
     list($status, $headers, $body) = $result;
-    $headers['X-Powered-By'] = "rack-php ".implode('.',$env['rack.version']);
+    $headers['X-Powered-By'] = 'rack-php ' . implode('.', $env['rack.version']);
     exit(json_encode(array($status, $headers, $body)));
   }
 
