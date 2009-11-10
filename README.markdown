@@ -65,6 +65,69 @@ RubyBridge is simple a proxy class that passes the real work to the php script v
 
 Here we can take advantage of the ruby Rack::File middle-ware to serve static files.  This is needed when running through servers like thin or mongrel directly.
 
+We can call PHP middleware through a RubyMiddlewareBridge class:
+
+**config.ru**
+    
+    class RubyMiddlewareBridge
+      def initialize(app)
+        @app = app
+      end
+
+      def call(env)
+        env['rack.ruby_bridge_response'] = @app.call(env)
+
+        response = []
+        data = JSON.dump(env)
+        IO.popen("./rackup.php", 'r+') do |io|
+          io.write data
+          io.close_write
+          response = io.read
+        end
+        JSON.load(response)
+      end
+    end
+
+    use RubyMiddlewareBridge
+    use Rack::Reloader
+    use Rack::ContentLength
+
+    app = proc do |env|
+      [200, {'Content-Type' => 'text/html'}, ['Hello world']]
+    end
+
+    run app
+
+And inside the rackup.php we can use PHP middleware to continue the rack app callchain:
+
+**rackup.php**
+
+    #!/usr/bin/env php
+    <?
+    require realpath(dirname(__FILE__).'/lib/autoload.php');
+    use core\RubyBridge;
+
+    class SwapHelloWorld extends core\App
+    {
+      protected $app;
+
+      public function __construct($app)
+      {
+        $this->app = $app;
+      }
+
+      public function __invoke($env)
+      {
+        list($status, $headers, $body) = $this->call($this->app, $env);
+        $parts = split(' ', $body[0]);
+        $body = $parts[1] . ' ' . $parts[0];
+        return array($status, $headers, array($body));
+      }
+    }
+
+    RubyBridge::useMiddleware('SwapHelloWorld');
+    RubyBridge::run(); // => world Hello
+
 ## Simple Rack PHP App
 
 Here is a small sample rack-php app that simply ignores all input and outputs the string "Hello World".

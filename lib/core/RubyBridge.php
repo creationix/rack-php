@@ -16,5 +16,23 @@ class RubyBridge extends Rack
     $headers['X-Powered-By'] = 'rack-php ' . implode('.', $env['rack.version']);
     exit(json_encode(array($status, $headers, $body)));
   }
-
+  
+  public static function run($app = null)
+  {
+    $env =& static::get_env();
+    
+    if (is_null($app) && !is_null($env['rack.ruby_bridge_response'])) {
+      $app = function ($env) use ($env) { return $env['rack.ruby_bridge_response']; };
+    }
+    
+    ob_start();
+    $result = self::runMiddleware($app, $env);
+    $output = ob_get_clean();
+    
+    if ($output) 
+    {
+      $result[1]["X-Output"] = json_encode($output);
+    }
+    static::execute($result, $env);
+  }
 }
