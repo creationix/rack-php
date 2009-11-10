@@ -78,11 +78,9 @@ class Rack
   
   public static function run($app)
   {
-    array_push(self::$middleware, $app);
     $env =& static::get_env();
-    
     ob_start();
-    $result = self::runMiddleware($env);
+    $result = self::runMiddleware($app, $env);
     $output = ob_get_clean();
     
     if ($output) 
@@ -110,18 +108,13 @@ class Rack
     exit;
   }
   
-  public static function runMiddleware($env)
+  public static function runMiddleware($inner_app, $env)
   {
-    if (empty(self::$middleware)) {
-      return null;
-    }
+    self::$middleware = array_reverse(self::$middleware);
+    self::useMiddleware('core\ShowExceptions');
     
-    $middleware = self::$middleware;
-    $inner_app = array_pop($middleware);
-    $middleware =& array_reverse($middleware);
-    
-    if (!empty($middleware)) {
-      foreach ($middleware as $app) {
+    if (!empty(self::$middleware)) {
+      foreach (self::$middleware as $app) {
         $inner_app = $app($inner_app);
       }
     }
