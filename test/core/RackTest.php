@@ -3,41 +3,15 @@ require_once "TestHelper.php";
 use core\Rack;
 use core\App;
 
-class MyMiddleware extends App
-{
-  public function __invoke($env)
-  {
-    return array(200, array("Content-Type" => "text/html"), array('Hello world!'));
-  }
-}
-
-class MyLowercaseMiddleware extends App
-{
-  public function __invoke($env)
-  {
-    return array(200, array("Content-Type" => "text/html"), array('this is in lowercase'));
-  }
-}
-
-class MyUppercaseMiddleware extends App
+class RackTest extends PHPUnit_Framework_TestCase
 {
   protected $app;
   
-  public function __construct($app)
+  public function setUp()
   {
-    $this->app = $app;
+    $this->app = new MockApp;
   }
   
-  public function __invoke($env)
-  {
-    list($status, $headers, $response) = $this->call($this->app, $env);
-    $uppercase_response = array(strtoupper($response[0]));
-    return array($status, $headers, $uppercase_response);
-  }
-}
-
-class RackTest extends PHPUnit_Framework_TestCase
-{
   public function tearDown()
   {
     Rack::clearMiddleware();
@@ -46,5 +20,25 @@ class RackTest extends PHPUnit_Framework_TestCase
   public function testMiddlewareReturnsEmptyArray()
   {
     $this->assertEquals(array(), Rack::middleware());
+  }
+  
+  public function testShouldRunApp()
+  {
+    $env = MockRack::run($this->app);
+    $this->assertEquals(200, $env[0]);
+    $this->assertEquals('text/html', $env[1]['Content-Type']);
+    $this->assertEquals(array('Hello World'), $env[2]);
+  }
+  
+  public function testShouldRunLambdaApp()
+  {
+    $app = function ($env) {
+      return array(200, array('Content-Type' => 'text/plain'), array('This is from lambda!'));
+    };
+    
+    $env = MockRack::run($app);
+    $this->assertEquals(200, $env[0]);
+    $this->assertEquals('text/plain', $env[1]['Content-Type']);
+    $this->assertEquals(array('This is from lambda!'), $env[2]);
   }
 }
